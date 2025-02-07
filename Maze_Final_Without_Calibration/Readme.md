@@ -35,7 +35,7 @@ according to Yeok-C's inverse kinematics requirements.
 
 ## Launching the website and running the code.
 
-Open two terminals and ```cd``` into the folder ```web_joystick``` in both of them.
+Open two terminals and ```cd``` into the folder ```Maze_Final_Without_Calibration``` in both of them.
 
 In one terminal run:
 ```bash:
