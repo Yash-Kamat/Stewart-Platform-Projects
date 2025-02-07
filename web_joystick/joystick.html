@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Joystick</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.9.0/nipplejs.min.js"></script>
+</head>
+<body style="margin:0; background:#f0f0f0; display:flex; align-items:center; justify-content:center; height:100vh;">
+    <div id="joystick-zone" style="width: 300px; height: 300px; background:#ddd; border-radius:50%; position: relative;"></div>
+
+    <script>
+        // Connect to WebSocket server (replace with your device's IP if needed)
+        const socket = new WebSocket("ws://192.168.1.100:8765");
+
+        socket.onopen = function() {
+            console.log("✅ WebSocket connected!");
+        };
+
+        socket.onerror = function(error) {
+            console.log("❌ WebSocket error:", error);
+        };
+
+        socket.onclose = function() {
+            console.log("🔌 WebSocket disconnected.");
+        };
+
+        // Create joystick
+        const joystick = nipplejs.create({
+            zone: document.getElementById('joystick-zone'),
+            mode: 'static',
+            position: { left: '50%', top: '50%' },
+            size: 150,
+            color: 'blue'
+        });
+
+        // Send joystick data via WebSocket
+        joystick.on('move', function(evt, data) {
+            let roll = data.vector.x.toFixed(2);   // X-axis
+            let pitch = (-data.vector.y).toFixed(2); // Y-axis (inverted)
+            let message = JSON.stringify({ roll, pitch });
+            
+            console.log("📡 Sending:", message);
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(message);
+            }
+        });
+
+        // ✅ Add this to reset roll & pitch when joystick is released
+        joystick.on('end', function() {
+            let message = JSON.stringify({ roll: 0, pitch: 0 });
+        
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(message);
+            }
+        });
+    </script>
+</body>
+</html>
