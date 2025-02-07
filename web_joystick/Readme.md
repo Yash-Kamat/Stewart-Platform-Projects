@@ -1,6 +1,7 @@
 # How to get roll and pitch values from the joystick
 
 Note: These instructions are specific to linux, and might need to be modified for different platforms.
+You might need to install the packages asyncio, websockets and json for the code be executed.
 
 ## Connect to Hotspot
 
